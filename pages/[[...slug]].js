@@ -1,17 +1,24 @@
-import run from "lib/puppeteer-core-test";
 import Head from "next/head";
+import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 // import styles from "../styles/Home.module.css";
 import styles from "../styles/Home.v2.module.css";
+import { screenshotPage } from "lib/crawler";
 
-export default function Home({ openings }) {
+const trackedJobs = [
+  {
+    interests: "Frontend",
+    jobPage: "https%3A%2F%2Fboards.greenhouse.io%2Fremotecom",
+  },
+  {
+    interests: "Subscription",
+    jobPage: "https%3A%2F%2Fwww.spotifyjobs.com%2Flocations%2Fmumbai",
+  },
+];
+export default function Home({ imageUrl }) {
   const router = useRouter();
-
-  // If the page is not yet generated, this will be displayed
-  // initially until getStaticProps() finishes running
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
+  const { slug } = router.query;
 
   return (
     <div className={`${styles.container}`}>
@@ -23,9 +30,7 @@ export default function Home({ openings }) {
         <div className={styles.inpForm}>
           <form className={`h100 flx flx-col flx-cntr ${styles.form}`}>
             <div className="flx flx-cntr">
-              <label htmlFor="cName">
-                Company&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              </label>
+              <label htmlFor="cName">Company</label>
               <input
                 id="cName"
                 type="text"
@@ -36,7 +41,7 @@ export default function Home({ openings }) {
               ></input>
             </div>
             <div className="flx flx-cntr">
-              <label htmlFor="cUrl">Career URL&nbsp;&nbsp;&nbsp;</label>
+              <label htmlFor="cUrl">Career URL</label>
               <input
                 id="cUrl"
                 type="url"
@@ -49,65 +54,40 @@ export default function Home({ openings }) {
           </form>
         </div>
         <div className={styles.scene}>
+          <div className={styles.card}>
+            <Link
+              href={`/${trackedJobs[0].interests}/${trackedJobs[0].jobPage}`}
+            >
+              <a>Remote.com</a>
+            </Link>
+          </div>
+          <div className={styles.card}>
+            <Link
+              href={`/${trackedJobs[1].interests}/${trackedJobs[1].jobPage}`}
+            >
+              <a>Spotify</a>
+            </Link>
+          </div>
           <div className={styles.card}></div>
           <div className={styles.card}></div>
-          <div className={styles.card}></div>
-          {/* <div className={styles.card}></div> */}
-          {/* <div className={styles.card}></div> */}
         </div>
-        <div className={styles.extraction}></div>
-
-        {/* <div className={`${styles.containerIframe} w100`}>
-           <iframe
-            className={`${styles.respIframe} w100 h100`}
-            loading="lazy"
-            src="https://www.spotifyjobs.com/locations/mumbai"
-            onLoad={() => console.log(`Iframe loaded`)}
-            sandbox="allow-scripts allow-same-origin allow-popups"
-            onError={(err) => {
-              console.error(`Iframe load error`);
-              console.table(err);
-            }}
-          ></iframe> 
-        </div>*/}
-        {/* <div className={`${styles.controls} flx flx-cntr`}>
-          <div className="flx flx-col flx-cntr">
-            <button
-              type="button"
-              className={styles.btn}
-              aria-labelledby="btn-1"
-            >
-              R
-            </button>
-            <span id="btn-1" className={styles.lbl}>
-              Remote
-            </span>
-          </div>
-          <div className="flx flx-col flx-cntr">
-            <button
-              type="button"
-              className={styles.btn}
-              aria-labelledby="btn-2"
-            >
-              L
-            </button>
-            <span id="btn-2" className={styles.lbl}>
-              Loom
-            </span>
-          </div>
-          <div className="flx flx-col flx-cntr">
-            <button
-              type="button"
-              className={styles.btn}
-              aria-labelledby="btn-3"
-            >
-              E
-            </button>
-            <span id="btn-3" className={styles.lbl}>
-              Elastic
-            </span>
-          </div>
-        </div>*/}
+        <div className={styles.extraction}>
+          <blockquote>
+            {slug ? (
+              router.isFallback ? (
+                "Scanning the job page..."
+              ) : (
+                <Image
+                  alt="Job Openings"
+                  src={imageUrl}
+                  layout="responsive"
+                  width={600}
+                  height={253.125}
+                />
+              )
+            ) : null}
+          </blockquote>
+        </div>
       </main>
     </div>
   );
@@ -117,46 +97,45 @@ export async function getStaticProps({ params }) {
   // Code for scraping job postings
   // Call an external API endpoint to get posts
   const { slug } = params;
+  let out = "";
   if (slug === undefined || slug.length !== 2) {
     return {
       props: {
-        openings: null,
+        imageUrl: out,
       },
     };
   } else {
     const {
       slug: [interests, companyCareerUrl],
     } = params;
-    const [posts, browser] = await run({
-      interests: decodeURIComponent(interests),
-      companyCareerUrl: decodeURIComponent(companyCareerUrl),
-    });
-    let out = [];
-    for (const post of posts) {
-      const valueHandle = await post.getProperty("innerText");
-      out.push(await valueHandle.jsonValue());
+
+    if (interests && companyCareerUrl) {
+      const [imageUrl, browser] = await screenshotPage({
+        interests,
+        companyCareerUrl,
+      });
+      out = imageUrl;
+      await browser.close();
     }
-    await browser.close();
 
     return {
       props: {
-        openings: out,
+        imageUrl: out,
       },
       // Next.js will attempt to re-generate the page:
       // - When a request comes in
-      // - At most once every second
-      revalidate: 1, // In seconds
+      // - At most once every 10 seconds
+      revalidate: 10, // In seconds
     };
   }
 }
 
 export async function getStaticPaths() {
+  // We'll pre-render only these paths at build time.
   // Statically generate /
   const paths = [{ params: { slug: null } }];
-
-  // We'll pre-render only these paths at build time.
   // { fallback: true } means other routes not yet generated at build time
-  // will serve a fallback page (Spinner) on first req while Next.js generates static
+  // will serve a fallback page (Spinner) on first request while Next.js generates static
   // HTML and JSON in background.
   return { paths, fallback: true };
 }
