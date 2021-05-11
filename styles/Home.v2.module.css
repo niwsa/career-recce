@@ -18,16 +18,26 @@
   grid-column: 2 / span 3;
   border-radius: 40px;
   background: rgba(255, 255, 255, 0.25);
+  padding: 0 4rem;
 }
 
 .form {
   color: #fff;
   font-family: "Questrial", sans-serif;
   font-weight: bold;
+  align-items: stretch;
 }
 
 .form > div {
   margin-bottom: 1rem;
+}
+
+.form label {
+  flex: 0 0 12ch;
+}
+
+.form input {
+  flex: 1 1 600px;
 }
 
 .scene {
@@ -51,20 +61,25 @@
   top: 50px;
   cursor: pointer;
 }
-.card:nth-child(3) {
-  border: dashed 5px #fff;
+.card:nth-child(1) {
+  transform: rotate3d(0, 1, 0, -20deg) translate3d(0, -75px, -300px)
+    skewY(25deg);
 }
 .card:nth-child(2) {
+  transform: rotate3d(0, 1, 0, -20deg) translate3d(0, -50px, -200px)
+    skewY(25deg);
+}
+.card:nth-child(3) {
   transform: rotate3d(0, 1, 0, -20deg) translate3d(0, -25px, -100px)
     skewY(25deg);
 }
-.card:nth-child(1) {
-  transform: rotate3d(0, 1, 0, -20deg) translate3d(0, -50px, -200px)
-    skewY(25deg);
+.card:nth-child(4) {
+  border: dashed 5px #fff;
 }
 .extraction {
   grid-column: 2 / span 5;
   grid-row: 2;
   background: linear-gradient(180deg, #f7f7f7, #fff1db);
   border-radius: 40px;
+  overflow: hidden;
 }
