@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import styles from "../styles/Home.v2.module.css";
-import { screenshotPage } from "lib/crawler";
+import { screenshotPage } from "lib/screenshot";
 
 const trackedJobs = [
   {
