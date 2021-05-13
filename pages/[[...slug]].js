@@ -97,7 +97,7 @@ export async function getStaticProps({ params }) {
   // Call an external API endpoint to get posts
   const { slug } = params;
   let out = "";
-  if (slug === undefined || slug.length !== 2) {
+  if (slug === null || slug.length !== 2) {
     return {
       props: {
         imageUrl: out,
