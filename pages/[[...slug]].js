@@ -66,7 +66,11 @@ export default function Home({ imageUrl }) {
               <a>Spotify</a>
             </Link>
           </div>
-          <div className={styles.card}></div>
+          <div className={styles.card}>
+            <Link href={`/testISR/abcd`}>
+              <a>abcd</a>
+            </Link>
+          </div>
           <div className={styles.card}></div>
         </div>
         <div className={styles.extraction}>
