@@ -18,7 +18,7 @@ export async function getStaticProps({ params }) {
   return {
     props: {
       esEpoch: new Date().getTime(),
-      t_id: id.toUpperCase() + ">.<",
+      t_id: id?.toUpperCase() + ">.<",
     },
     revalidate: 10,
   };
@@ -26,7 +26,11 @@ export async function getStaticProps({ params }) {
 
 export async function getStaticPaths() {
   return {
-    paths: [{ params: { id: "abcd" } }, { params: { id: "efgh" } }],
+    paths: [
+      { params: { id: "abcd" } },
+      { params: { id: "efgh" } },
+      { params: { id: null } },
+    ],
     fallback: true,
   };
 }
