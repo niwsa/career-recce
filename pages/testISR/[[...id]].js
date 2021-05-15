@@ -14,11 +14,12 @@ export default function TestISR({ esEpoch, t_id }) {
 }
 
 export async function getStaticProps({ params }) {
+  console.log(params);
   const { id } = params;
   return {
     props: {
       esEpoch: new Date().getTime(),
-      t_id: id?.toUpperCase() + ">.<",
+      t_id: id?.join(":").toUpperCase() + ">.<",
     },
     revalidate: 10,
   };
@@ -27,8 +28,8 @@ export async function getStaticProps({ params }) {
 export async function getStaticPaths() {
   return {
     paths: [
-      { params: { id: "abcd" } },
-      { params: { id: "efgh" } },
+      // { params: { id: "abcd" } },
+      // { params: { id: "efgh" } },
       { params: { id: null } },
     ],
     fallback: true,
