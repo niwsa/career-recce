@@ -92,6 +92,7 @@ export default function Home({ imageUrl }) {
 export async function getStaticProps({ params }) {
   // Code for scraping job postings
   // Call an external API endpoint to get posts
+  console.log(params);
   const { slug } = params;
   let out = "";
 

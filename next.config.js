@@ -1,12 +1,12 @@
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-  enabled: process.env.ANALYZE === "true",
-});
+// const withBundleAnalyzer = require("@next/bundle-analyzer")({
+//   enabled: process.env.ANALYZE === "true",
+// });
 
-module.exports = withBundleAnalyzer({
+module.exports = {
   future: {
     webpack5: true,
   },
   images: {
     domains: ["res.cloudinary.com"],
   },
-});
+};
