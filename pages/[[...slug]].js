@@ -17,7 +17,6 @@ const trackedJobs = [
 ];
 export default function Home({ imageUrl }) {
   const router = useRouter();
-  const { slug } = router.query;
 
   return (
     <div className={`${styles.container}`}>
@@ -72,18 +71,16 @@ export default function Home({ imageUrl }) {
         </div>
         <div className={styles.extraction}>
           <blockquote>
-            {slug ? (
-              router.isFallback ? (
-                "Scanning the job page..."
-              ) : (
-                <Image
-                  alt="Job Openings"
-                  src={imageUrl}
-                  layout="responsive"
-                  width={600}
-                  height={253.125}
-                />
-              )
+            {router.isFallback ? (
+              "Scanning the job page..."
+            ) : imageUrl ? (
+              <Image
+                alt="Job Openings"
+                src={imageUrl}
+                layout="responsive"
+                width={600}
+                height={253.125}
+              />
             ) : null}
           </blockquote>
         </div>
@@ -97,13 +94,8 @@ export async function getStaticProps({ params }) {
   // Call an external API endpoint to get posts
   const { slug } = params;
   let out = "";
-  if (slug === undefined || slug.length !== 2) {
-    return {
-      props: {
-        imageUrl: out,
-      },
-    };
-  } else {
+
+  if (Array.isArray(slug) && slug.length === 2) {
     const {
       slug: [interests, companyCareerUrl],
     } = params;
@@ -116,17 +108,17 @@ export async function getStaticProps({ params }) {
       out = imageUrl;
       await browser.close();
     }
-
-    return {
-      props: {
-        imageUrl: out,
-      },
-      // Next.js will attempt to re-generate the page:
-      // - When a request comes in
-      // - At most once every 10 seconds
-      revalidate: 10, // In seconds
-    };
   }
+
+  return {
+    props: {
+      imageUrl: out,
+    },
+    // Next.js will attempt to re-generate the page:
+    // - When a request comes in
+    // - At most once every 10 seconds
+    revalidate: 1, // In seconds
+  };
 }
 
 export async function getStaticPaths() {
