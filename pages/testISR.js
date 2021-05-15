@@ -11,6 +11,6 @@ export async function getStaticProps() {
     props: {
       esEpoch: new Date().getTime(),
     },
-    revalidate: 1,
+    revalidate: 10,
   };
 }
