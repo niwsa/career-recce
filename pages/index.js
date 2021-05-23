@@ -24,7 +24,7 @@ export default function Home() {
 
   const { data: scanResults, error } = useSWR(
     entity.query && entity.url
-      ? `/api/scan/${entity.query}/${entity.url}`
+      ? `/api/scan?query=${entity.query}&url=${entity.url}`
       : null,
     (...args) => fetch(...args).then((res) => res.json()),
     { revalidateOnFocus: false }
