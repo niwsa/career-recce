@@ -80,6 +80,8 @@
   grid-column: 2 / span 5;
   grid-row: 2;
   background: linear-gradient(180deg, #f7f7f7, #fff1db);
-  border-radius: 40px;
+  /* border-radius: 40px; */
+  /* https://stackoverflow.com/a/40819372/3939061 */
+  clip-path: inset(0 0 0 0 round 40px);
   overflow: hidden;
 }
