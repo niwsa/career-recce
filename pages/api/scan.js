@@ -2,7 +2,7 @@ import { screenshotPage } from "lib/screenshot";
 
 export default async function handler(req, res) {
   const { query, url } = req.query;
-  console.log(`generating screenshot for 🕸`, url);
+  console.log(`generating screenshot for 🕸`);
   console.table({ query, url });
   const imageUrl = await screenshotPage({
     interests: query,
